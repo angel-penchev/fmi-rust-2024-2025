@@ -79,4 +79,50 @@ mod test {
         //     1,
         // );
     }
+
+    /// Validates FibIter can be correctly initialized.
+    #[test]
+    fn test_fib_iter_new() {
+        let fib_iter = FibIter::new();
+        assert_eq!(1, fib_iter.number1);
+        assert_eq!(1, fib_iter.number2);
+    }
+
+    /// Validates the fist 8 FibIter itterations (produced by next()) are correctly created.
+    #[test]
+    fn test_fib_iter_next_8_times() {
+        let mut fib_iter = FibIter::new();
+
+        fib_iter.next();
+        assert_eq!(1, fib_iter.number1);
+        assert_eq!(2, fib_iter.number2);
+
+        fib_iter.next();
+        assert_eq!(2, fib_iter.number1);
+        assert_eq!(3, fib_iter.number2);
+
+        fib_iter.next();
+        assert_eq!(3, fib_iter.number1);
+        assert_eq!(5, fib_iter.number2);
+
+        fib_iter.next();
+        assert_eq!(5, fib_iter.number1);
+        assert_eq!(8, fib_iter.number2);
+
+        fib_iter.next();
+        assert_eq!(8, fib_iter.number1);
+        assert_eq!(13, fib_iter.number2);
+
+        fib_iter.next();
+        assert_eq!(13, fib_iter.number1);
+        assert_eq!(21, fib_iter.number2);
+
+        fib_iter.next();
+        assert_eq!(21, fib_iter.number1);
+        assert_eq!(34, fib_iter.number2);
+
+        fib_iter.next();
+        assert_eq!(34, fib_iter.number1);
+        assert_eq!(55, fib_iter.number2);
+    }
 }
