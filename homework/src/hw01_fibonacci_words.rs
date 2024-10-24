@@ -1,3 +1,5 @@
+use std::char;
+
 pub struct FibIter {
     number1: u32,
     number2: u32,
@@ -36,7 +38,22 @@ impl FibIter {
 }
 
 pub fn fib_split(text: &str) -> Vec<String> {
-    todo!()
+    let mut fib_iter = FibIter::new();
+    let mut result: Vec<String> = vec![String::from("")];
+    let mut current_substring_size: u32 = 0;
+
+    for char in (*text).chars() {
+        result.last_mut().unwrap().push(char);
+        current_substring_size += 1;
+
+        if current_substring_size == fib_iter.number1 {
+            result.push(String::from(""));
+            fib_iter.next();
+            current_substring_size = 0;
+        }
+    }
+
+    result
 }
 
 pub fn fib_split_n(text: &str, n: u32) -> (Vec<String>, &str) {
@@ -66,9 +83,9 @@ mod test {
 
         // let mut rev_fib_iter: RevFibIter = fib_iter.rev();
         // rev_fib_iter.next();
-        //
-        // let _words: Vec<String> = fib_split("Fibonacci words!");
-        //
+
+        let _words: Vec<String> = fib_split("Fibonacci words!");
+
         // let (_words, _rest): (Vec<String>, &str) = fib_split_n(
         //     "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
         //     1,
@@ -124,5 +141,13 @@ mod test {
         fib_iter.next();
         assert_eq!(34, fib_iter.number1);
         assert_eq!(55, fib_iter.number2);
+    }
+
+    #[test]
+    fn test_fib_split_words() {
+        let input = "Fibonacci words!";
+        let expected_result = vec!["F", "i", "bo", "nac", "ci wo", "rds!"];
+        let actual_result = fib_split(input);
+        assert_eq!(expected_result, actual_result);
     }
 }
