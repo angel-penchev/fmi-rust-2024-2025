@@ -150,8 +150,8 @@ mod test {
         assert_eq!(55, fib_iter.number2);
     }
 
-    /// Validates that `fib_split()` function correctly splits the input string into words with lengths that match the Fibonacci
-    /// numbers.
+    /// Validates that `fib_split()` function correctly splits the input string into words with
+    /// lengths that match the Fibonacc numbers.
     #[test]
     fn test_fib_split_words() {
         let input = "Fibonacci words!";
@@ -161,8 +161,40 @@ mod test {
         assert_eq!(expected_result, actual_result);
     }
 
-    /// Validates that `fib_split_n()`` function correctly splits the input string into N words with lengths that match the Fibonacci
-    /// numbers. Also, validates the rest of the string is correctly returned.
+    /// Validates that `fib_split()` function correctly splits an empty string into an empty vector.
+    #[test]
+    fn test_fib_split_words_empty() {
+        let input = "";
+        let expected_result = vec![""];
+        let actual_result = fib_split(input);
+
+        assert_eq!(expected_result, actual_result);
+    }
+
+    /// Validates that `fib_split()` function correctly splits a string with cyrillic UTF-8
+    /// characters.
+    #[test]
+    fn test_fib_split_words_cyrillic() {
+        let input = "Гошо Лошо се обади на авера си Пошо Мошо за да се срещнат с Тошо Рошо. 123";
+        let expected_result = vec![
+            "Г",
+            "о",
+            "шо",
+            " Ло",
+            "шо се",
+            " обади н",
+            "а авера си По",
+            "шо Мошо за да се срещ",
+            "нат с Тошо Рошо. 123",
+        ];
+        let actual_result = fib_split(input);
+
+        assert_eq!(expected_result, actual_result);
+    }
+
+    /// Validates that `fib_split_n()` function correctly splits the input string into N words
+    /// with lengths that match the Fibonacci numbers. Also, validates the rest of the string is
+    /// correctly returned.
     #[test]
     fn test_fib_split_n_words() {
         let input_string = "Lorem ipsum dolor sit amet.";
@@ -183,6 +215,29 @@ mod test {
         let expected_result_vector =
             vec!["Г", "о", "шо", " Ло", "шо се", " обади н", "а авера си По"];
         let expected_result_rest = "шо Мошо. 123";
+        let actual_result = fib_split_n(input_string, input_number);
+
+        assert_eq!(expected_result_vector, actual_result.0);
+        assert_eq!(expected_result_rest, actual_result.1);
+    }
+
+    /// Validates that `fib_split_n()` can correctly process UTF-8 emojis in strings.
+    #[test]
+    fn test_fib_split_n_words_emoji() {
+        // This is the most cursed test I've ever written...
+        let input_string =
+            "🦀🌝🍑😩👀🥹🫡🦀🦀🦀🦀🦀👉👈🥺3.0🦀🙏🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🍑🍑🍑🍑🍑🍑";
+        let input_number = 7;
+        let expected_result_vector = vec![
+            "🦀",
+            "🌝",
+            "🍑😩",
+            "👀🥹🫡",
+            "🦀🦀🦀🦀🦀",
+            "👉👈🥺3.0🦀🙏",
+            "🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀",
+        ];
+        let expected_result_rest = "🍑🍑🍑🍑🍑🍑";
         let actual_result = fib_split_n(input_string, input_number);
 
         assert_eq!(expected_result_vector, actual_result.0);
