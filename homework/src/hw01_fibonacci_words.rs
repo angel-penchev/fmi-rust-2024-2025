@@ -1,5 +1,3 @@
-use std::char;
-
 pub struct FibIter {
     number1: u32,
     number2: u32,
@@ -57,7 +55,16 @@ pub fn fib_split(text: &str) -> Vec<String> {
 }
 
 pub fn fib_split_n(text: &str, n: u32) -> (Vec<String>, &str) {
-    todo!()
+    // Gather the vector to return
+    let fib_split_of_text = fib_split(text);
+    let fib_split_iter = fib_split_of_text.iter();
+    let fib_split_n_slice: Vec<String> = fib_split_iter.take(n as usize).cloned().collect();
+
+    // Gather the rest of the text
+    let text_skip_n_bytes: usize = fib_split_n_slice.iter().map(|element| element.len()).sum();
+    let text_rest = &text[text_skip_n_bytes..];
+
+    (fib_split_n_slice, text_rest)
 }
 
 pub struct RevFibIter {/* ... */}
@@ -86,18 +93,18 @@ mod test {
 
         let _words: Vec<String> = fib_split("Fibonacci words!");
 
-        // let (_words, _rest): (Vec<String>, &str) = fib_split_n(
-        //     "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-        //     1,
-        // );
-        //
+        let (_words, _rest): (Vec<String>, &str) = fib_split_n(
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+            1,
+        );
+
         // let (_words, _rest): (Vec<String>, &str) = fib_split_n_symmetric(
         //     "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
         //     1,
         // );
     }
 
-    /// Validates FibIter can be correctly initialized.
+    /// Validates `FibIter` can be correctly initialized.
     #[test]
     fn test_fib_iter_new() {
         let fib_iter = FibIter::new();
@@ -105,7 +112,7 @@ mod test {
         assert_eq!(1, fib_iter.number2);
     }
 
-    /// Validates the fist 8 FibIter itterations (produced by next()) are correctly created.
+    /// Validates the fist 8 `FibIter` itterations (produced by `next()`) are correctly created.
     #[test]
     fn test_fib_iter_next_8_times() {
         let mut fib_iter = FibIter::new();
@@ -143,11 +150,42 @@ mod test {
         assert_eq!(55, fib_iter.number2);
     }
 
+    /// Validates that `fib_split()` function correctly splits the input string into words with lengths that match the Fibonacci
+    /// numbers.
     #[test]
     fn test_fib_split_words() {
         let input = "Fibonacci words!";
         let expected_result = vec!["F", "i", "bo", "nac", "ci wo", "rds!"];
         let actual_result = fib_split(input);
+
         assert_eq!(expected_result, actual_result);
+    }
+
+    /// Validates that `fib_split_n()`` function correctly splits the input string into N words with lengths that match the Fibonacci
+    /// numbers. Also, validates the rest of the string is correctly returned.
+    #[test]
+    fn test_fib_split_n_words() {
+        let input_string = "Lorem ipsum dolor sit amet.";
+        let input_number = 6;
+        let expected_result_vector = vec!["L", "o", "re", "m i", "psum ", "dolor si"];
+        let expected_result_rest = "t amet.";
+        let actual_result = fib_split_n(input_string, input_number);
+
+        assert_eq!(expected_result_vector, actual_result.0);
+        assert_eq!(expected_result_rest, actual_result.1);
+    }
+
+    /// Validates that `fib_split_n()` can correctly process UTF-8 cyrillic characters in strings.
+    #[test]
+    fn test_fib_split_n_words_cyrillic() {
+        let input_string = "Гошо Лошо се обади на авера си Пошо Мошо. 123";
+        let input_number = 7;
+        let expected_result_vector =
+            vec!["Г", "о", "шо", " Ло", "шо се", " обади н", "а авера си По"];
+        let expected_result_rest = "шо Мошо. 123";
+        let actual_result = fib_split_n(input_string, input_number);
+
+        assert_eq!(expected_result_vector, actual_result.0);
+        assert_eq!(expected_result_rest, actual_result.1);
     }
 }
