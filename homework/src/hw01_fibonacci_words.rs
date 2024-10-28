@@ -21,17 +21,20 @@ impl FibIter {
     }
 
     #[allow(clippy::should_implement_trait)] // Disable clippy warning about the method name being
-                                             // similar to a trait name
+                                             // similar to iterator trait name.
     pub fn next(&mut self) -> u32 {
         let number2_backup = self.number2;
         self.number2 += self.number1;
         self.number1 = number2_backup;
 
-        self.number2
+        self.number1
     }
 
     pub fn rev(self) -> RevFibIter {
-        todo!()
+        RevFibIter {
+            number1: self.number1,
+            number2: self.number2,
+        }
     }
 }
 
@@ -67,11 +70,24 @@ pub fn fib_split_n(text: &str, n: u32) -> (Vec<String>, &str) {
     (fib_split_n_slice, text_rest)
 }
 
-pub struct RevFibIter {/* ... */}
+pub struct RevFibIter {
+    number1: u32,
+    number2: u32,
+}
 
 impl RevFibIter {
+    #[allow(clippy::should_implement_trait)] // Disable clippy warning about the method name being
+                                             // similar to iterator trait name
     pub fn next(&mut self) -> Option<u32> {
-        todo!()
+        if self.number1 == 1 && self.number2 == 1 {
+            return None;
+        }
+
+        let number1_backup = self.number1;
+        self.number1 = self.number2 - self.number1;
+        self.number2 = number1_backup;
+
+        Some(self.number1)
     }
 }
 
@@ -88,8 +104,8 @@ mod test {
         let mut fib_iter = FibIter::new();
         fib_iter.next();
 
-        // let mut rev_fib_iter: RevFibIter = fib_iter.rev();
-        // rev_fib_iter.next();
+        let mut rev_fib_iter: RevFibIter = fib_iter.rev();
+        rev_fib_iter.next();
 
         let _words: Vec<String> = fib_split("Fibonacci words!");
 
@@ -116,6 +132,8 @@ mod test {
     #[test]
     fn test_fib_iter_next_8_times() {
         let mut fib_iter = FibIter::new();
+        assert_eq!(1, fib_iter.number1);
+        assert_eq!(1, fib_iter.number2);
 
         fib_iter.next();
         assert_eq!(1, fib_iter.number1);
@@ -148,6 +166,49 @@ mod test {
         fib_iter.next();
         assert_eq!(34, fib_iter.number1);
         assert_eq!(55, fib_iter.number2);
+    }
+
+    #[test]
+    fn test_fib_iter_rev_next_8_times() {
+        let mut fib_iter = FibIter::new();
+        fib_iter.number1 = 34;
+        fib_iter.number2 = 55;
+
+        let mut rev_fib_iter = fib_iter.rev();
+        assert_eq!(34, rev_fib_iter.number1);
+        assert_eq!(55, rev_fib_iter.number2);
+
+        rev_fib_iter.next();
+        assert_eq!(21, rev_fib_iter.number1);
+        assert_eq!(34, rev_fib_iter.number2);
+
+        rev_fib_iter.next();
+        assert_eq!(13, rev_fib_iter.number1);
+        assert_eq!(21, rev_fib_iter.number2);
+
+        rev_fib_iter.next();
+        assert_eq!(8, rev_fib_iter.number1);
+        assert_eq!(13, rev_fib_iter.number2);
+
+        rev_fib_iter.next();
+        assert_eq!(5, rev_fib_iter.number1);
+        assert_eq!(8, rev_fib_iter.number2);
+
+        rev_fib_iter.next();
+        assert_eq!(3, rev_fib_iter.number1);
+        assert_eq!(5, rev_fib_iter.number2);
+
+        rev_fib_iter.next();
+        assert_eq!(2, rev_fib_iter.number1);
+        assert_eq!(3, rev_fib_iter.number2);
+
+        rev_fib_iter.next();
+        assert_eq!(1, rev_fib_iter.number1);
+        assert_eq!(2, rev_fib_iter.number2);
+
+        rev_fib_iter.next();
+        assert_eq!(1, rev_fib_iter.number1);
+        assert_eq!(1, rev_fib_iter.number2);
     }
 
     /// Validates that `fib_split()` function correctly splits the input string into words with
