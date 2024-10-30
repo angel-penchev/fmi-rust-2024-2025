@@ -352,7 +352,7 @@ mod test {
     fn test_fib_split_n_emoji() {
         // This is the most cursed test I've ever written...
         let input_string =
-            "🦀🌝🍑😩👀🥹🫡🦀🦀🦀🦀🦀👉👈🥺3.0🦀🙏🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🍑🍑🍑🍑🍑🍑";
+            "🦀🌝🍑😩👀🥹🫡🦀🦀🦀🦀🦀👉👈🥺3.0🦀🙏🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🍑🍑🍑🍑🍑🍑🍑🍑";
         let input_number = 7;
         let expected_result_vector = vec![
             "🦀",
@@ -363,7 +363,7 @@ mod test {
             "👉👈🥺3.0🦀🙏",
             "🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀",
         ];
-        let expected_result_rest = "🍑🍑🍑🍑🍑🍑";
+        let expected_result_rest = "🍑🍑🍑🍑🍑🍑🍑🍑";
         let actual_result = fib_split_n(input_string, input_number);
 
         assert_eq!(expected_result_vector, actual_result.0);
@@ -382,6 +382,58 @@ mod test {
             "L", "o", "re", "m i", "psum ", "dolor", " si", "t ", "a", "m",
         ];
         let expected_result_rest = "et.";
+        let actual_result = fib_split_n_symmetric(input_string, input_number);
+
+        assert_eq!(expected_result_vector, actual_result.0);
+        assert_eq!(expected_result_rest, actual_result.1);
+    }
+
+    /// Validates that `fib_split_n_symmetric()` can correctly process UTF-8 cyrrillic characters in strings.
+    #[test]
+    fn test_fib_split_n_symmetric_cyrillic() {
+        let input_string = "Гошо Лошо се обади на авера си Пошо Мошо. 123";
+        let input_number = 5;
+        let expected_result_vector = vec![
+            "Г",
+            "о",
+            "шо",
+            " Ло",
+            "шо се",
+            " обад",
+            "и н",
+            "а ",
+            "а",
+            "в",
+        ];
+        let expected_result_rest = "ера си Пошо Мошо. 123";
+        let actual_result = fib_split_n_symmetric(input_string, input_number);
+
+        assert_eq!(expected_result_vector, actual_result.0);
+        assert_eq!(expected_result_rest, actual_result.1);
+    }
+
+    /// Validates that `fib_split_n()` can correctly process UTF-8 emojis in strings.
+    #[test]
+    fn test_fib_split_n_symmetric_emoji() {
+        // This is the most cursed test I've ever written...
+        let input_string =
+            "🦀🌝🍑😩👀🥹🫡🦀🦀🦀🦀🦀👉👈🥺3.0🦀🙏🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🍑🍑🍑🍑🍑🍑🍑🍑";
+        let input_number = 6;
+        let expected_result_vector = vec![
+            "🦀",
+            "🌝",
+            "🍑😩",
+            "👀🥹🫡",
+            "🦀🦀🦀🦀🦀",
+            "👉👈🥺3.0🦀🙏",
+            "🦀🦀🦀🦀🦀🦀🦀🦀",
+            "🦀🦀🦀🦀🦀",
+            "🍑🍑🍑",
+            "🍑🍑",
+            "🍑",
+            "🍑",
+        ];
+        let expected_result_rest = "🍑";
         let actual_result = fib_split_n_symmetric(input_string, input_number);
 
         assert_eq!(expected_result_vector, actual_result.0);
