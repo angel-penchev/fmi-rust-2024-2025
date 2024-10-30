@@ -128,46 +128,55 @@ mod test {
         assert_eq!(1, fib_iter.number2);
     }
 
-    /// Validates the fist 8 `FibIter` itterations (produced by `next()`) are correctly created.
+    /// Validates the first 8 `FibIter` itterations (produced by `next()`) are correctly created.
     #[test]
     fn test_fib_iter_next_8_times() {
         let mut fib_iter = FibIter::new();
         assert_eq!(1, fib_iter.number1);
         assert_eq!(1, fib_iter.number2);
 
-        fib_iter.next();
+        let result = fib_iter.next();
         assert_eq!(1, fib_iter.number1);
         assert_eq!(2, fib_iter.number2);
+        assert_eq!(1, result);
 
-        fib_iter.next();
+        let result = fib_iter.next();
         assert_eq!(2, fib_iter.number1);
         assert_eq!(3, fib_iter.number2);
+        assert_eq!(2, result);
 
-        fib_iter.next();
+        let result = fib_iter.next();
         assert_eq!(3, fib_iter.number1);
         assert_eq!(5, fib_iter.number2);
+        assert_eq!(3, result);
 
-        fib_iter.next();
+        let result = fib_iter.next();
         assert_eq!(5, fib_iter.number1);
         assert_eq!(8, fib_iter.number2);
+        assert_eq!(5, result);
 
-        fib_iter.next();
+        let result = fib_iter.next();
         assert_eq!(8, fib_iter.number1);
         assert_eq!(13, fib_iter.number2);
+        assert_eq!(8, result);
 
-        fib_iter.next();
+        let result = fib_iter.next();
         assert_eq!(13, fib_iter.number1);
         assert_eq!(21, fib_iter.number2);
+        assert_eq!(13, result);
 
-        fib_iter.next();
+        let result = fib_iter.next();
         assert_eq!(21, fib_iter.number1);
         assert_eq!(34, fib_iter.number2);
+        assert_eq!(21, result);
 
-        fib_iter.next();
+        let result = fib_iter.next();
         assert_eq!(34, fib_iter.number1);
         assert_eq!(55, fib_iter.number2);
+        assert_eq!(34, result);
     }
 
+    /// Validates the first 8 `FibIterRev` itterations (produced by `next()`) are correctly created.
     #[test]
     fn test_fib_iter_rev_next_8_times() {
         let mut fib_iter = FibIter::new();
@@ -178,37 +187,50 @@ mod test {
         assert_eq!(34, rev_fib_iter.number1);
         assert_eq!(55, rev_fib_iter.number2);
 
-        rev_fib_iter.next();
+        let result = rev_fib_iter.next();
         assert_eq!(21, rev_fib_iter.number1);
         assert_eq!(34, rev_fib_iter.number2);
+        assert_eq!(21, result.unwrap());
 
-        rev_fib_iter.next();
+        let result = rev_fib_iter.next();
         assert_eq!(13, rev_fib_iter.number1);
         assert_eq!(21, rev_fib_iter.number2);
+        assert_eq!(13, result.unwrap());
 
-        rev_fib_iter.next();
+        let result = rev_fib_iter.next();
         assert_eq!(8, rev_fib_iter.number1);
         assert_eq!(13, rev_fib_iter.number2);
+        assert_eq!(8, result.unwrap());
 
-        rev_fib_iter.next();
+        let result = rev_fib_iter.next();
         assert_eq!(5, rev_fib_iter.number1);
         assert_eq!(8, rev_fib_iter.number2);
+        assert_eq!(5, result.unwrap());
 
-        rev_fib_iter.next();
+        let result = rev_fib_iter.next();
         assert_eq!(3, rev_fib_iter.number1);
         assert_eq!(5, rev_fib_iter.number2);
+        assert_eq!(3, result.unwrap());
 
-        rev_fib_iter.next();
+        let result = rev_fib_iter.next();
         assert_eq!(2, rev_fib_iter.number1);
         assert_eq!(3, rev_fib_iter.number2);
+        assert_eq!(2, result.unwrap());
 
-        rev_fib_iter.next();
+        let result = rev_fib_iter.next();
         assert_eq!(1, rev_fib_iter.number1);
         assert_eq!(2, rev_fib_iter.number2);
+        assert_eq!(1, result.unwrap());
 
-        rev_fib_iter.next();
+        let result = rev_fib_iter.next();
         assert_eq!(1, rev_fib_iter.number1);
         assert_eq!(1, rev_fib_iter.number2);
+        assert_eq!(1, result.unwrap());
+
+        let result = rev_fib_iter.next();
+        assert_eq!(1, rev_fib_iter.number1);
+        assert_eq!(1, rev_fib_iter.number2);
+        assert_eq!(None, result);
     }
 
     /// Validates that `fib_split()` function correctly splits the input string into words with
