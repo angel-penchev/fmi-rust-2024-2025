@@ -92,7 +92,40 @@ impl RevFibIter {
 }
 
 pub fn fib_split_n_symmetric(text: &str, n: u32) -> (Vec<String>, &str) {
-    todo!()
+    let (mut words, rest) = fib_split_n(text, n);
+
+    // Roll the iterator to N - 1 iterations
+    let mut fib_iter = FibIter::new();
+    for _index in 0..n - 1 {
+        fib_iter.next();
+    }
+    let mut rev_fib_iter: RevFibIter = fib_iter.rev();
+
+    // Same logic as fib_split, but with a reversed iterator on words
+    let mut current_substring_size: u32 = 0;
+    let mut bytes_to_skip: usize = 0;
+    words.push(String::from(""));
+
+    for char in (*rest).chars() {
+        words.last_mut().unwrap().push(char);
+        current_substring_size += 1;
+        bytes_to_skip += char.len_utf8();
+
+        if current_substring_size == rev_fib_iter.number1 {
+            if rev_fib_iter.number1 == 1 && rev_fib_iter.number2 == 1 {
+                break;
+            }
+
+            words.push(String::from(""));
+            rev_fib_iter.next();
+            current_substring_size = 0;
+        }
+    }
+
+    // Remove the bytes to skip from the rest of the text
+    let rest = &rest[bytes_to_skip..];
+
+    (words, rest)
 }
 
 #[cfg(test)]
@@ -114,10 +147,10 @@ mod test {
             1,
         );
 
-        // let (_words, _rest): (Vec<String>, &str) = fib_split_n_symmetric(
-        //     "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-        //     1,
-        // );
+        let (_words, _rest): (Vec<String>, &str) = fib_split_n_symmetric(
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+            1,
+        );
     }
 
     /// Validates `FibIter` can be correctly initialized.
@@ -332,6 +365,24 @@ mod test {
         ];
         let expected_result_rest = "🍑🍑🍑🍑🍑🍑";
         let actual_result = fib_split_n(input_string, input_number);
+
+        assert_eq!(expected_result_vector, actual_result.0);
+        assert_eq!(expected_result_rest, actual_result.1);
+    }
+
+    /// Validates that `fib_split_n_symmetric()` function correctly splits the input
+    /// string into 2N symmetric words with lengths that match the Fibonacci numbers
+    /// up to N iterations and then in reverse. Also, validates the rest of the
+    /// string is correctly returned.
+    #[test]
+    fn test_fib_split_n_symmetric_ascii() {
+        let input_string = "Lorem ipsum dolor sit amet.";
+        let input_number = 5;
+        let expected_result_vector = vec![
+            "L", "o", "re", "m i", "psum ", "dolor", " si", "t ", "a", "m",
+        ];
+        let expected_result_rest = "et.";
+        let actual_result = fib_split_n_symmetric(input_string, input_number);
 
         assert_eq!(expected_result_vector, actual_result.0);
         assert_eq!(expected_result_rest, actual_result.1);
