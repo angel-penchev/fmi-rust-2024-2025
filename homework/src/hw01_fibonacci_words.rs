@@ -21,6 +21,7 @@ impl FibIter {
     ///
     /// # Example
     /// ```rust
+    /// use homework::hw01_fibonacci_words::FibIter;
     /// let fib_iter = FibIter::new();
     /// ```
     pub fn new() -> Self {
@@ -38,11 +39,13 @@ impl FibIter {
     ///
     /// # Example
     /// ```rust
+    /// use homework::hw01_fibonacci_words::FibIter;
     /// let mut fib_iter = FibIter::new();
     /// let result = fib_iter.next(); // result == 1
     /// let result = fib_iter.next(); // result == 2
     /// let result = fib_iter.next(); // result == 3
     /// let result = fib_iter.next(); // result == 5
+    /// let result = fib_iter.next(); // result == 8
     /// ```
     #[allow(clippy::should_implement_trait)] // Disable clippy warning about the method name being
                                              // similar to iterator trait name.
@@ -62,6 +65,9 @@ impl FibIter {
     ///
     /// # Example
     /// ```rust
+    /// use homework::hw01_fibonacci_words::FibIter;
+    /// use homework::hw01_fibonacci_words::RevFibIter;
+    ///
     /// let mut fib_iter = FibIter::new();
     /// fib_iter.next(); // number1 = 1, number2 = 2
     /// let rev_fib_iter: RevFibIter = fib_iter.rev(); // number1 = 1, number2 = 2
@@ -85,6 +91,7 @@ impl FibIter {
 ///
 /// # Example
 /// ```rust
+/// use homework::hw01_fibonacci_words::fib_split;
 /// let text = "Fibonacci words!";
 /// let words: Vec<String> = fib_split(text); // vec!["F", "i", "bo", "nac", "ci wo", "rds!"]
 /// ```
@@ -119,9 +126,13 @@ pub fn fib_split(text: &str) -> Vec<String> {
 ///
 /// # Example
 /// ```rust
+/// use homework::hw01_fibonacci_words::fib_split_n;
+///
 /// let text = "Lorem ipsum dolor sit amet.";
-/// let (words, rest) = fib_split_n(text, 5);
-/// // (vec!["L", "o", "re", "m i", "psum ", "dolor si"], "t amet.")
+/// let (words, rest) = fib_split_n(text, 5); // results in (
+///                                           //   vec!["L", "o", "re", "m i", "psum ", "dolor si"],
+///                                           //   "t amet."
+///                                           // )
 /// ```
 pub fn fib_split_n(text: &str, n: u32) -> (Vec<String>, &str) {
     // Gather the vector to return
@@ -149,10 +160,15 @@ impl RevFibIter {
     ///
     /// # Example
     /// ```rust
+    /// use homework::hw01_fibonacci_words::FibIter;
+    /// use homework::hw01_fibonacci_words::RevFibIter;
+    ///
     /// let mut fib_iter = FibIter::new();
     /// fib_iter.next(); // number1 = 1, number2 = 2
-    /// let rev_fib_iter: RevFibIter = fib_iter.rev(); // number1 = 1, number2 = 2
-    /// rev_fib_iter.next(); // result == 1, number1 = 1, number2 = 1
+    ///
+    /// let mut rev_fib_iter: RevFibIter = fib_iter.rev(); // number1 = 1, number2 = 2
+    /// rev_fib_iter.next(); // result == Some(1), number1 = 1, number2 = 1
+    /// rev_fib_iter.next(); // result == None, number1 = 1, number2 = 1
     /// ```
     #[allow(clippy::should_implement_trait)] // Disable clippy warning about the method name being
                                              // similar to iterator trait name
@@ -181,9 +197,24 @@ impl RevFibIter {
 ///
 /// # Example
 /// ```rust
+/// use homework::hw01_fibonacci_words::fib_split_n_symmetric;
+///
 /// let text = "Lorem ipsum dolor sit amet.";
-/// let (words, rest) = fib_split_n_symmetric(text, 5);
-/// // (vec!["L", "o", "re", "m i", "psum ", "dolor", " si", "t ", "a", "m"], "et.")
+/// let (words, rest) = fib_split_n_symmetric(text, 5); // results in (
+///                                                     //   vec![
+///                                                     //     "L",
+///                                                     //     "o",
+///                                                     //     "re",
+///                                                     //     "m i",
+///                                                     //     "psum ",
+///                                                     //     "dolor",
+///                                                     //     "sit",
+///                                                     //     "am",
+///                                                     //     "e",
+///                                                     //     "t",
+///                                                     //   ],
+///                                                     //   "."
+///                                                     // )
 /// ```
 pub fn fib_split_n_symmetric(text: &str, n: u32) -> (Vec<String>, &str) {
     let (mut words, rest) = fib_split_n(text, n);
@@ -206,12 +237,12 @@ pub fn fib_split_n_symmetric(text: &str, n: u32) -> (Vec<String>, &str) {
         bytes_to_skip += char.len_utf8();
 
         if current_substring_size == rev_fib_iter.number1 {
-            if rev_fib_iter.number1 == 1 && rev_fib_iter.number2 == 1 {
+            let next = rev_fib_iter.next();
+            if next.is_none() {
                 break;
             }
 
             words.push(String::from(""));
-            rev_fib_iter.next();
             current_substring_size = 0;
         }
     }
