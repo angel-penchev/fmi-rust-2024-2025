@@ -3,6 +3,7 @@ pub struct FibIter {
     number2: u32,
 }
 
+/// Default implementation for `FibIter` struct.
 impl Default for FibIter {
     fn default() -> Self {
         FibIter {
@@ -13,6 +14,15 @@ impl Default for FibIter {
 }
 
 impl FibIter {
+    /// Creates a new `FibIter` with the first two Fibonacci numbers set to 1.
+    ///
+    /// # Returns
+    /// A new `FibIter` struct with the first two numbers set to 1.
+    ///
+    /// # Example
+    /// ```rust
+    /// let fib_iter = FibIter::new();
+    /// ```
     pub fn new() -> Self {
         FibIter {
             number1: 1,
@@ -20,6 +30,20 @@ impl FibIter {
         }
     }
 
+    /// Returns the next Fibonacci number in the sequence.
+    /// Increments the internal state of the iterator.
+    ///
+    /// # Returns
+    /// The next Fibonacci number in the sequence
+    ///
+    /// # Example
+    /// ```rust
+    /// let mut fib_iter = FibIter::new();
+    /// let result = fib_iter.next(); // result == 1
+    /// let result = fib_iter.next(); // result == 2
+    /// let result = fib_iter.next(); // result == 3
+    /// let result = fib_iter.next(); // result == 5
+    /// ```
     #[allow(clippy::should_implement_trait)] // Disable clippy warning about the method name being
                                              // similar to iterator trait name.
     pub fn next(&mut self) -> u32 {
@@ -30,6 +54,18 @@ impl FibIter {
         self.number1
     }
 
+    /// Creates a new `RevFibIter` from a `FibIter`.
+    ///
+    /// # Returns
+    /// A new `RevFibIter` struct with the first two numbers set to the last two numbers of the
+    /// Fibonacci sequence iterator.
+    ///
+    /// # Example
+    /// ```rust
+    /// let mut fib_iter = FibIter::new();
+    /// fib_iter.next(); // number1 = 1, number2 = 2
+    /// let rev_fib_iter: RevFibIter = fib_iter.rev(); // number1 = 1, number2 = 2
+    /// ```
     pub fn rev(self) -> RevFibIter {
         RevFibIter {
             number1: self.number1,
@@ -38,6 +74,20 @@ impl FibIter {
     }
 }
 
+/// Creates a vector with words that have lengths that match the Fibonacci numbers. The last
+/// element of the vector is the rest of the string.
+///
+/// # Arguments
+/// * `text` - A string to split into words.
+///
+/// # Returns
+/// A vector of strings with lengths that match the Fibonacci numbers.
+///
+/// # Example
+/// ```rust
+/// let text = "Fibonacci words!";
+/// let words: Vec<String> = fib_split(text); // vec!["F", "i", "bo", "nac", "ci wo", "rds!"]
+/// ```
 pub fn fib_split(text: &str) -> Vec<String> {
     let mut fib_iter = FibIter::new();
     let mut result: Vec<String> = vec![String::from("")];
@@ -57,6 +107,22 @@ pub fn fib_split(text: &str) -> Vec<String> {
     result
 }
 
+/// Creates a vector with N words that have lengths that match the Fibonacci numbers. The rest of
+/// the characters are returned as a string.
+///
+/// # Arguments
+/// * `text` - A string to split into words.
+/// * `n` - The number of Fibonacci words to split the text into.
+///
+/// # Returns
+/// A tuple (vector of strings, rest of the text).
+///
+/// # Example
+/// ```rust
+/// let text = "Lorem ipsum dolor sit amet.";
+/// let (words, rest) = fib_split_n(text, 5);
+/// // (vec!["L", "o", "re", "m i", "psum ", "dolor si"], "t amet.")
+/// ```
 pub fn fib_split_n(text: &str, n: u32) -> (Vec<String>, &str) {
     // Gather the vector to return
     let fib_split_of_text = fib_split(text);
@@ -76,6 +142,18 @@ pub struct RevFibIter {
 }
 
 impl RevFibIter {
+    /// Returns the next Fibonacci number in the reversed sequence.
+    ///
+    /// # Returns
+    /// The next Fibonacci number in the reversed sequence.
+    ///
+    /// # Example
+    /// ```rust
+    /// let mut fib_iter = FibIter::new();
+    /// fib_iter.next(); // number1 = 1, number2 = 2
+    /// let rev_fib_iter: RevFibIter = fib_iter.rev(); // number1 = 1, number2 = 2
+    /// rev_fib_iter.next(); // result == 1, number1 = 1, number2 = 1
+    /// ```
     #[allow(clippy::should_implement_trait)] // Disable clippy warning about the method name being
                                              // similar to iterator trait name
     pub fn next(&mut self) -> Option<u32> {
@@ -91,6 +169,22 @@ impl RevFibIter {
     }
 }
 
+/// Creates a vector with 2N symmetric words that have lengths that match the Fibonacci numbers
+/// forward and in reverse. The last element of the vector is the rest of the string.
+///
+/// # Arguments
+/// * `text` - A string to split into words.
+/// * `n` - The number of Fibonacci words to split the text into forwards and backwards.
+///
+/// # Returns
+/// A tuple (vector of strings, rest of the text).
+///
+/// # Example
+/// ```rust
+/// let text = "Lorem ipsum dolor sit amet.";
+/// let (words, rest) = fib_split_n_symmetric(text, 5);
+/// // (vec!["L", "o", "re", "m i", "psum ", "dolor", " si", "t ", "a", "m"], "et.")
+/// ```
 pub fn fib_split_n_symmetric(text: &str, n: u32) -> (Vec<String>, &str) {
     let (mut words, rest) = fib_split_n(text, n);
 
@@ -132,6 +226,7 @@ pub fn fib_split_n_symmetric(text: &str, n: u32) -> (Vec<String>, &str) {
 mod test {
     use super::*;
 
+    /// Basic test, which validates that all functions compile and run without panicking.
     #[test]
     fn test_basic() {
         let mut fib_iter = FibIter::new();
@@ -287,7 +382,7 @@ mod test {
         assert_eq!(expected_result, actual_result);
     }
 
-    /// Validates that `fib_split()` function correctly splits a string with cyrillic UTF-8
+    /// Validates that `fib_split()` function correctly splits a string with Cyrillic UTF-8
     /// characters.
     #[test]
     fn test_fib_split_cyrillic() {
@@ -333,7 +428,7 @@ mod test {
         assert_eq!(expected_result_rest, actual_result.1);
     }
 
-    /// Validates that `fib_split_n()` can correctly process UTF-8 cyrillic characters in strings.
+    /// Validates that `fib_split_n()` can correctly process UTF-8 Cyrillic characters in strings.
     #[test]
     fn test_fib_split_n_cyrillic() {
         let input_string = "Гошо Лошо се обади на авера си Пошо Мошо. 123";
@@ -388,7 +483,7 @@ mod test {
         assert_eq!(expected_result_rest, actual_result.1);
     }
 
-    /// Validates that `fib_split_n_symmetric()` can correctly process UTF-8 cyrrillic characters in strings.
+    /// Validates that `fib_split_n_symmetric()` can correctly process UTF-8 Cyrillic characters in strings.
     #[test]
     fn test_fib_split_n_symmetric_cyrillic() {
         let input_string = "Гошо Лошо се обади на авера си Пошо Мошо. 123";
