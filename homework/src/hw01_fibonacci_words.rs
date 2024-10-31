@@ -219,6 +219,11 @@ impl RevFibIter {
 pub fn fib_split_n_symmetric(text: &str, n: u32) -> (Vec<String>, &str) {
     let (mut words, rest) = fib_split_n(text, n);
 
+    // If there is nothing to split, return the words and rest as they currently are
+    if rest.is_empty() {
+        return (words, rest);
+    }
+
     // Roll the iterator to N - 1 iterations
     let mut fib_iter = FibIter::new();
     for _index in 0..n - 1 {
@@ -473,6 +478,19 @@ mod test {
         assert_eq!(expected_result_rest, actual_result.1);
     }
 
+    /// Validates that `fib_split_n()` function correctly splits a short string into words.
+    #[test]
+    fn test_fib_split_n_short() {
+        let input_string = "Lorem.";
+        let input_number = 5;
+        let expected_result_vector = vec!["L", "o", "re", "m."];
+        let expected_result_rest = "";
+        let actual_result = fib_split_n(input_string, input_number);
+
+        assert_eq!(expected_result_vector, actual_result.0);
+        assert_eq!(expected_result_rest, actual_result.1);
+    }
+
     /// Validates that `fib_split_n()` can correctly process UTF-8 emojis in strings.
     #[test]
     fn test_fib_split_n_emoji() {
@@ -560,6 +578,19 @@ mod test {
             "🍑",
         ];
         let expected_result_rest = "🍑";
+        let actual_result = fib_split_n_symmetric(input_string, input_number);
+
+        assert_eq!(expected_result_vector, actual_result.0);
+        assert_eq!(expected_result_rest, actual_result.1);
+    }
+
+    /// Validates that `fib_split()` function correctly splits a short string into words.
+    #[test]
+    fn test_fib_split_n_symmetric_short() {
+        let input_string = "Lorem.";
+        let input_number = 5;
+        let expected_result_vector = vec!["L", "o", "re", "m."];
+        let expected_result_rest = "";
         let actual_result = fib_split_n_symmetric(input_string, input_number);
 
         assert_eq!(expected_result_vector, actual_result.0);
