@@ -596,4 +596,17 @@ mod test {
         assert_eq!(expected_result_vector, actual_result.0);
         assert_eq!(expected_result_rest, actual_result.1);
     }
+
+    /// Validates that `fib_split()` function correctly splits a short with exact 1/2 way length string into words.
+    #[test]
+    fn test_fib_split_n_symmetric_half() {
+        let input_string = "Lorem ipsum.";
+        let input_number = 5;
+        let expected_result_vector = vec!["L", "o", "re", "m i", "psum."];
+        let expected_result_rest = "";
+        let actual_result = fib_split_n_symmetric(input_string, input_number);
+
+        assert_eq!(expected_result_vector, actual_result.0);
+        assert_eq!(expected_result_rest, actual_result.1);
+    }
 }
