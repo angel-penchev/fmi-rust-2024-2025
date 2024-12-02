@@ -84,13 +84,39 @@ mod test {
         assert_eq!(expected_result, actual_result);
     }
 
-    /// Validate that the `format_flat` function works as expected, if the imports are sorted.
+    /// Validate that the `format_flat` function works as expected, if the imports are to be sorted.
     #[test]
     fn test_format_flat_sorted() {
         let imports = &[
             Import(&["my_crate", "b", "B2"]),
             Import(&["my_crate", "a"]),
             Import(&["my_crate", "b", "B1"]),
+        ];
+        let order = Order::Sorted;
+
+        let expected_result = vec![
+            String::from("my_crate::a"),
+            String::from("my_crate::b::B1"),
+            String::from("my_crate::b::B2"),
+        ];
+        let actual_result = format_flat(imports, order);
+
+        assert_eq!(expected_result, actual_result);
+    }
+
+    /// Validate that the `format_flat` function does not display any duplicates.
+    #[test]
+    fn test_format_flat_sorted_with_duplicates() {
+        let imports = &[
+            Import(&["my_crate", "b", "B1"]),
+            Import(&["my_crate", "b", "B2"]),
+            Import(&["my_crate", "a"]),
+            Import(&["my_crate", "b", "B2"]),
+            Import(&["my_crate", "b", "B1"]),
+            Import(&["my_crate", "b", "B2"]),
+            Import(&["my_crate", "b", "B2"]),
+            Import(&["my_crate", "a"]),
+            Import(&["my_crate", "a"]),
         ];
         let order = Order::Sorted;
 
