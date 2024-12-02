@@ -1,3 +1,4 @@
+use std::collections::HashSet;
 use std::fmt;
 
 pub struct Import<'a>(pub &'a [&'a str]);
@@ -15,7 +16,12 @@ impl<'a> fmt::Display for Import<'a> {
 }
 
 pub fn format_flat(imports: &[Import], order: Order) -> Vec<String> {
-    imports.iter().map(|i| i.to_string()).collect()
+    let mut processed = HashSet::new();
+    imports
+        .iter()
+        .map(|import| import.to_string())
+        .filter(|import| processed.insert(import.clone())) // .insert() returns true if the value was not present before
+        .collect()
 }
 
 pub fn format_nested(imports: &[Import], order: Order) -> Vec<String> {
@@ -32,6 +38,28 @@ mod test {
         let imports = &[
             Import(&["my_crate", "a"]),
             Import(&["my_crate", "b", "B1"]),
+            Import(&["my_crate", "b", "B2"]),
+        ];
+        let order = Order::Original;
+
+        let expected_result = vec![
+            String::from("my_crate::a"),
+            String::from("my_crate::b::B1"),
+            String::from("my_crate::b::B2"),
+        ];
+        let actual_result = format_flat(imports, order);
+
+        assert_eq!(expected_result, actual_result);
+    }
+
+    /// Validate that the `format_flat` function does not display any duplicates.
+    #[test]
+    fn test_format_flat_original_with_duplicates() {
+        let imports = &[
+            Import(&["my_crate", "a"]),
+            Import(&["my_crate", "b", "B1"]),
+            Import(&["my_crate", "b", "B1"]),
+            Import(&["my_crate", "b", "B2"]),
             Import(&["my_crate", "b", "B2"]),
         ];
         let order = Order::Original;
